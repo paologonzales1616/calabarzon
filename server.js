@@ -78,23 +78,83 @@ server.put("/accounts", async (req, res) => {
   });
 });
 
-server.get(
-  "/dataset/:year/:brgy/:sex/:age/:disease_code",
-  async (req, res) => {
-    const data = require("./data/dataset/dataset.json");
-    const { year, brgy, sex, age, disease_code } = req.params;
-    res.json(
-      data.filter(
+server.post("/visual", async (req, res) => {
+  const data = require("./data/dataset/dataset.json");
+  const { year, brgy, sex, age } = req.body;
+  let resultSet = [];
+  const unique = [
+    ...new Set(
+      data
+        .filter(
+          val =>
+            val.year == parseInt(year) &&
+            (brgy == "all" ? brgy != "" : brgy == val.barangay) &&
+            (sex == "all" ? sex != "" : sex == val.sex) &&
+            (age == "all" ? age != "" : age == val.age)
+        )
+        .map(item => item.disease)
+    )
+  ];
+
+  unique.map(unique_code => {
+    let caseCount = 0;
+    data
+      .filter(
         val =>
-          val["Year"] == year &&
-          val["barangay"] == brgy &&
-          val["sex"] == sex &&
-          val["age"] == age &&
-          val["disease"] == disease_code
+          val.year == parseInt(year) &&
+          (brgy == "all" ? brgy != "" : brgy == val.barangay) &&
+          (sex == "all" ? sex != "" : sex == val.sex) &&
+          (age == "all" ? age != "" : age == val.age)
       )
-    );
-  }
-);
+      .map(tempMap => {
+        if (tempMap.disease == unique_code) {
+          caseCount += tempMap.cases;
+        }
+      });
+    resultSet.push({ disease_code: unique_code, cases: caseCount });
+  });
+
+  res.json(
+    resultSet
+      .sort(function(a, b) {
+        return b.cases - a.cases;
+      })
+      .slice(0, 10)
+  );
+});
+
+server.post("/prediction", async (req, res) => {
+  const data = require("./data/dataset/dataset.json");
+  const { year } = req.body;
+});
+
+server.post("/map/info", async (req, res) => {
+
+});
+
+server.post("/dataset/get", async (req, res) => {
+  const data = require("./data/dataset/dataset.json");
+  const { year, brgy, sex, age, disease_code } = req.body;
+  res.json(
+    data.filter(
+      val =>
+        val.year == parseInt(year) &&
+        val.barangay == brgy &&
+        val.sex == sex &&
+        val.age == age &&
+        val.disease == disease_code
+    )
+  );
+});
+
+server.post("/dataset/new", async (req, res) => {
+  const data = require("./data/dataset/dataset.json");
+  const { year, brgy, sex, age, disease_code, cases } = req.body;
+
+});
+server.put("/dataset/", async (req, res) => {});
+server.delete("/dataset/", async (req, res) => {});
+
 
 // Serve the static files from the React app
 server.use(express.static(path.join(__dirname, "client/calabarzon/build")));

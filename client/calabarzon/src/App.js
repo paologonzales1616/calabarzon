@@ -12,7 +12,7 @@ import DatasetPage from "./pages/dataset";
 import AccountPage from "./pages/account";
 import PredictionPage from "./pages/prediction";
 import VisualizationPage from "./pages/visualization";
-
+import DiseasePage from "./pages/disease"
 const App = () => {
   return (
     <Router>
@@ -25,6 +25,8 @@ const App = () => {
           <Route path="/account" component={AccountPage} />
           <Route path="/prediction" component={PredictionPage} />
           <Route path="/visualization" component={VisualizationPage} />
+          <Route path="/disease" component={DiseasePage} />
+
         </Switch>
       </Store>
     </Router>

@@ -4,7 +4,8 @@ import {
   faChartBar,
   faUser,
   faInfoCircle,
-  faDatabase
+  faDatabase,
+  faCode
 } from "@fortawesome/free-solid-svg-icons";
 
 export const routes = [
@@ -30,6 +31,12 @@ export const routes = [
     name: "Dataset",
     page: "dataset",
     icon: faDatabase,
+    account_type: ["admin", "user"]
+  },
+  {
+    name: "Disease Code List",
+    page: "disease",
+    icon: faCode,
     account_type: ["admin", "user"]
   },
   {

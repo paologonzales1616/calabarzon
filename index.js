@@ -10,7 +10,7 @@ const uuidv1 = require('uuid/v1');
 const data = require("./data/dataset/dataset.json")
 
 data.map(val => {
-  val.uid = uuidv1()
+  delete val.case
 })
 
 fs.writeFileSync("./data/dataset/dataset.json", JSON.stringify(data))
